@@ -3,7 +3,6 @@ import ContactForm from "./components/ContactForm/ContactForm";
 import ContactList from "./components/ContactList";
 import Filter from "./components/Filter/Filter";
 
-
 class App extends Component {
   state = {
     contacts: [
@@ -14,6 +13,23 @@ class App extends Component {
     ],
     filter: "",
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    const nextContacts = this.state.contacts;
+    const prevContacts = prevState.contacts;
+    if (nextContacts !== prevContacts) {
+      localStorage.setItem("contacts", JSON.stringify(nextContacts));
+    }
+  }
+
+  componentDidMount() {
+    try {
+      const contactsFromStorage = JSON.parse(localStorage.getItem("contacts"));
+      contactsFromStorage && this.setState({ contacts: contactsFromStorage });
+    } catch {
+      console.log("Невалидный JSON");
+    }
+  }
 
   inputHandler = ({ target }) => {
     const { value, name } = target;
@@ -65,6 +81,5 @@ class App extends Component {
     );
   }
 }
-
 
 export default App;
